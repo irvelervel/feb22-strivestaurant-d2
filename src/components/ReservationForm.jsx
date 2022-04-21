@@ -38,13 +38,99 @@ class ReservationForm extends Component {
     })
   }
 
+  handleSubmit = async (e) => {
+    e.preventDefault()
+    // now we can do our stuff!
+    // https://striveschool-api.herokuapp.com/api/reservation
+    // this is a unauthorized endpoint
+
+    // how to deal with async ops (Promises)?
+    // 1) chained then(s) method
+    // fetch().then(() => console.log('47'))
+
+    // 2) async/await pattern
+    // await fetch()
+    // console.log('47')
+
+    // 1)
+    // fetch('https://striveschool-api.herokuapp.com/api/reservation', {
+    //   method: 'POST', // POST is for creating a new resource, a new reservation
+    //   body: JSON.stringify(this.state.reservation),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // })
+    //   .then((response) => {
+    //     console.log(response)
+    // if (response.ok) {
+    //   // this means SUCCESS! 🥳
+    //   alert('SUCCESS! 🥳')
+    // this.setState({
+    //     reservation: {
+    //       name: '',
+    //       phone: '',
+    //       numberOfPeople: 1,
+    //       smoking: false,
+    //       dateTime: '',
+    //       specialRequests: '',
+    //     },
+    //   })
+    // } else {
+    //   // this means you were able to contact the server, but something got wrong 😔
+    //   alert('ERROR HAPPENED 😔')
+    // }
+    //   })
+    //   .catch((error) => {
+    //     // you'll fall here if you are not even able to contact the endpoind
+    //     // maybe you don't have internet connection?
+    //     console.log(error)
+    //   })
+
+    // 2)
+    try {
+      let response = await fetch(
+        'https://striveschool-api.herokuapp.com/api/reservation',
+        {
+          method: 'POST', // POST is for creating a new resource, a new reservation
+          body: JSON.stringify(this.state.reservation),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      console.log(response)
+      if (response.ok) {
+        // this means SUCCESS! 🥳
+        alert('SUCCESS! 🥳')
+        this.setState({
+          reservation: {
+            name: '',
+            phone: '',
+            numberOfPeople: 1,
+            smoking: false,
+            dateTime: '',
+            specialRequests: '',
+          },
+        })
+      } else {
+        // this means you were able to contact the server, but something got wrong 😔
+        alert('ERROR HAPPENED 😔')
+        // let's not reset the form here, we want to let the user to try again
+      }
+    } catch (error) {
+      // you'll fall here if you are not even able to contact the endpoind
+      // maybe you don't have internet connection?
+      console.log(error)
+    }
+  }
+
   // render() is the only MANDATORY method in a class
   render() {
     return (
       <Row className="justify-content-center my-3">
         <Col md={6} className="text-center">
           <h2>Book your table NOW!</h2>
-          <Form className="mt-3">
+          <Form className="mt-3" onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label>Your name</Form.Label>
               <Form.Control
@@ -71,6 +157,7 @@ class ReservationForm extends Component {
                     // })
                     this.handleChange('name', e.target.value)
                 }
+                required
               />
             </Form.Group>
 
@@ -89,6 +176,9 @@ class ReservationForm extends Component {
                   //   })
                   this.handleChange('phone', e.target.value)
                 }
+                required
+                // FUNNY EXPERIMENT
+                // disabled={this.state.reservation.name === 'Stefano'}
               />
             </Form.Group>
 
@@ -106,6 +196,7 @@ class ReservationForm extends Component {
                   //   })
                   this.handleChange('numberOfPeople', e.target.value)
                 }
+                required
               >
                 <option>1</option>
                 <option>2</option>
@@ -168,6 +259,7 @@ class ReservationForm extends Component {
                     },
                   })
                 }
+                required
               />
             </Form.Group>
 
